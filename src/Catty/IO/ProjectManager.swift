@@ -22,20 +22,17 @@
 
 @objc open class ProjectManager: NSObject {
 
-     let fileManager: CBFileManager
-
     @objc static let shared = ProjectManager()
 
-     private init(fileManager: CBFileManager = CBFileManager.shared()!) {
-         self.fileManager = fileManager
+    private let fileManager: CBFileManager
+    private let imageCache: RuntimeImageCache
+
+    public init(fileManager: CBFileManager = CBFileManager.shared(), imageCache: RuntimeImageCache = RuntimeImageCache.shared()) {
+        self.fileManager = fileManager
+        self.imageCache = imageCache
      }
 
     @objc func createProject(name: String, projectId: String?) -> Project {
-        self.createProject(name: name, projectId: projectId, fileManager: self.fileManager, imageCache: RuntimeImageCache.shared())
-    }
-
-    func createProject(name: String, projectId: String?, fileManager: CBFileManager, imageCache: RuntimeImageCache) -> Project {
-
         let project = Project()
         let projectName = Util.uniqueName(name, existingNames: Project.allProjectNames())
         project.scene = Scene(name: Util.defaultSceneName(forSceneNumber: 1))
@@ -84,17 +81,6 @@
     }
 
     @objc func loadPreviewImageAndCache(projectLoadingInfo: ProjectLoadingInfo, completion: @escaping (_ image: UIImage?, _ path: String?) -> Void) {
-        self.loadPreviewImageAndCache(projectLoadingInfo: projectLoadingInfo,
-                                      fileManager: self.fileManager,
-                                      imageCache: RuntimeImageCache.shared(),
-                                      completion: completion)
-    }
-
-    func loadPreviewImageAndCache(projectLoadingInfo: ProjectLoadingInfo,
-                                  fileManager: CBFileManager,
-                                  imageCache: RuntimeImageCache,
-                                  completion: @escaping (_ image: UIImage?, _ path: String?) -> Void) {
-
         let fallbackPaths = [
             projectLoadingInfo.basePath + kScreenshotFilename,
             projectLoadingInfo.basePath + kScreenshotManualFilename,
@@ -111,8 +97,8 @@
 
         DispatchQueue.global(qos: .default).async {
             for imagePath in fallbackPaths {
-                if fileManager.fileExists(imagePath as String) {
-                    imageCache.loadImageFromDisk(
+                if self.fileManager.fileExists(imagePath as String) {
+                    self.imageCache.loadImageFromDisk(
                         withPath: imagePath,
                         andSize: UIDefines.previewImageSize,
                         onCompletion: { image, path in completion(image, path) })
@@ -126,7 +112,7 @@
         return
     }
 
-    func projectNames(for projectID: String, fileManager: CBFileManager = CBFileManager.shared()) -> [String]? {
+    func projectNames(for projectID: String) -> [String]? {
         if projectID.isEmpty {
             return nil
         }

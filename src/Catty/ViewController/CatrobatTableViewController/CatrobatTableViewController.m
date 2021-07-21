@@ -66,6 +66,14 @@ NS_ENUM(NSInteger, ViewControllerIndex) {
     return _lastUsedProject;
 }
 
+- (ProjectManager*)projectManager
+{
+    if (! _projectManager) {
+        _projectManager = [ProjectManager shared];
+    }
+    return _projectManager;
+}
+
 #pragma mark - view events
 - (void)viewDidLoad
 {
@@ -75,7 +83,7 @@ NS_ENUM(NSInteger, ViewControllerIndex) {
     self.freshLogin = false;
     self.lastUsedProject = nil;
     self.defaultProject = nil;
-    self.projectManager = [ProjectManager shared];
+    
     CBFileManager *fileManager = [CBFileManager sharedManager];
     if (! [fileManager directoryExists:[Project basePath]]) {
         [fileManager createDirectory:[Project basePath]];

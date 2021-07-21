@@ -45,6 +45,15 @@
 
 @implementation SceneTableViewController
 
+#pragma mark - getters and setters
+- (ProjectManager*)projectManager
+{
+    if (! _projectManager) {
+        _projectManager = [ProjectManager shared];
+    }
+    return _projectManager;
+}
+
 #pragma mark - initialization
 - (void)initNavigationBar
 {
@@ -67,7 +76,7 @@
     [self.tableView registerClass:[ProjectTableHeaderView class] forHeaderFooterViewReuseIdentifier:@"Header"];
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     self.editableSections = @[@(kObjectSectionIndex)];
-    self.projectManager = [ProjectManager shared];
+    
     if (self.scene.project.header.programName) {
         self.navigationItem.title = self.scene.project.header.programName;
         self.title = self.scene.project.header.programName;

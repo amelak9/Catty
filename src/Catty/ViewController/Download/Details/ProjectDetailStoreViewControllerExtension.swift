@@ -25,7 +25,6 @@ import ActiveLabel
 
     static var height: CGFloat = Util.screenHeight()
     static var marginLeftPercentage: CGFloat = 15.0
-    static var projectManager = ProjectManager.shared
 
     func createProjectDetailView(_ project: CatrobatProject, target: Any?) -> UIView? {
         let view = UIView(frame: CGRect(x: 0, y: 0, width: Util.screenWidth(), height: 0))
@@ -404,7 +403,7 @@ import ActiveLabel
     }
 
     func openButtonPressed() {
-        guard let localProjectNames = ProjectDetailStoreViewController.projectManager.projectNames(for: project.projectID) else {
+        guard let localProjectNames = self.projectManager.projectNames(for: project.projectID) else {
             Util.alert(text: kLocalizedUnableToLoadProject)
             return
         }

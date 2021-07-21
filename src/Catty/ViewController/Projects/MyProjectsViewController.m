@@ -46,6 +46,15 @@
 
 @implementation MyProjectsViewController
 
+#pragma mark - getters and setters
+- (ProjectManager*)projectManager
+{
+    if (! _projectManager) {
+        _projectManager = [ProjectManager shared];
+    }
+    return _projectManager;
+}
+
 #pragma mark - initialization
 - (void)initNavigationBar
 {
@@ -64,8 +73,7 @@
     [self initNavigationBar];
     self.defaultProject = nil;
     self.selectedProject = nil;
-    self.projectManager = [ProjectManager shared];
-
+    
     [self setupToolBar];
     
     [self setSectionHeaders];
